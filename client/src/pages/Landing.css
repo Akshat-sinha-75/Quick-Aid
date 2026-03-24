@@ -1,0 +1,209 @@
+.landing {
+  overflow: hidden;
+}
+
+/* Hero */
+.hero {
+  padding: 60px 0 40px;
+  text-align: center;
+  position: relative;
+  min-height: calc(100vh - 70px); /* Fill screen minus navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid var(--accent-light);
+  border-radius: 9999px;
+  color: var(--accent-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.1);
+}
+
+.hero-title {
+  font-size: 5.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+}
+
+/* Live ECG Animated Background */
+.ecg-container {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  width: 100vw;
+  height: 200px;
+  transform: translateY(-50%);
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0.25;
+  pointer-events: none;
+  
+  /* The scanner mask effect */
+  -webkit-mask-image: linear-gradient(to right, 
+    transparent 0%, 
+    rgba(0,0,0,0.05) 40%, 
+    rgba(0,0,0,1) 50%, 
+    transparent 51%, 
+    transparent 100%
+  );
+  mask-image: linear-gradient(to right, 
+    transparent 0%, 
+    rgba(0,0,0,0.05) 40%, 
+    rgba(0,0,0,1) 50%, 
+    transparent 51%, 
+    transparent 100%
+  );
+  -webkit-mask-size: 200% 100%;
+  mask-size: 200% 100%;
+  animation: ecgScan 6s linear infinite;
+}
+
+.ecg-svg {
+  width: 100vw;
+  height: 200px;
+}
+
+.ecg-svg path {
+  fill: none;
+  stroke: var(--accent-primary);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 12px var(--accent-primary));
+}
+
+@keyframes ecgScan {
+  0% { -webkit-mask-position: 200% 0; }
+  100% { -webkit-mask-position: -100% 0; }
+}
+
+.gradient-text {
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #475569;
+  max-width: 580px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+/* Features */
+.features {
+  padding: 60px 0 100px;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.section-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  color: #0f172a;
+  font-weight: 800;
+}
+.section-header p {
+  color: #64748b;
+  font-size: 1.1rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.feature-card {
+  text-align: center;
+  padding: 40px 24px;
+  background: white;
+  border: 1px solid #f1f5f9;
+}
+
+.feature-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.feature-card p {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.feature-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.icon-blue { background: #eff6ff; color: #3b82f6; }
+.icon-purple { background: #f5f3ff; color: #8b5cf6; }
+.icon-green { background: #ecfdf5; color: #10b981; }
+.icon-cyan { background: #ecfeff; color: #06b6d4; }
+.icon-orange { background: #fffbeb; color: #f59e0b; }
+.icon-red { background: #fef2f2; color: #ef4444; }
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .hero-actions .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
