@@ -174,4 +174,10 @@
   .dashboard-header-row h1 {
     font-size: 1.8rem;
   }
+  .stat-card {
+    padding: 16px;
+  }
+  .wound-card {
+    padding: 16px;
+  }
 }

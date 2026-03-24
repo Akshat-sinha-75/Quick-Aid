@@ -692,7 +692,42 @@
   .attributes-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+  .timeline-entry {
+    gap: 12px;
+  }
   .timeline-content {
-    padding: 16px;
+    padding: 16px 12px;
+  }
+  .detail-block {
+    padding: 16px 14px;
+    margin-bottom: 20px;
+  }
+  .analysis-item {
+    padding: 12px 10px;
+  }
+  .attribute-card {
+    padding: 10px 8px;
+  }
+  .overall-assessment {
+    padding: 14px 16px;
+  }
+  .treatment-list li {
+    padding: 12px 12px 12px 38px;
+    font-size: 0.85rem;
+  }
+  .treatment-list li::before {
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    font-size: 0.65rem;
+  }
+  .medication-card {
+    padding: 14px 16px;
+  }
+  .dont-list li, .doctor-list li {
+    padding: 10px 12px 10px 30px;
+  }
+  .dont-list li::before, .doctor-list li::before {
+    left: 8px;
   }
 }
