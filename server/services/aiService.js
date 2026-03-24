@@ -1,6 +1,6 @@
-const Groq = require('groq-sdk');
 const fs = require('fs');
 const path = require('path');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
@@ -10,22 +10,25 @@ function getMimeType(filePath) {
     case '.jpeg': return 'image/jpeg';
     case '.webp': return 'image/webp';
     case '.heic': return 'image/heic';
+    case '.avif': return 'image/avif';
+    case '.jfif': return 'image/jpeg';
     default: return 'image/jpeg';
   }
 }
 
 async function analyzeWound(imagePath, userNotes = '', previousAnalysis = null) {
-  if (!process.env.GROQ_API_KEY) {
-    throw new Error('GROQ_API_KEY is missing in your .env file');
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is missing in your .env file');
   }
 
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
   const mimeType = getMimeType(imagePath);
-  const imageBase64 = fs.readFileSync(imagePath).toString('base64');
-  const imageUrl = `data:${mimeType};base64,${imageBase64}`;
+  const imageData = fs.readFileSync(imagePath).toString('base64');
 
   let prompt = `You are an expert AI wound care assistant. Analyze this wound image carefully.
-Respond strictly in JSON format without markdown blocks (\`\`\`). Do not include any text outside the JSON.
+You MUST respond with ONLY valid JSON. No markdown, no code blocks, no extra text.
 
 JSON Structure:
 {
@@ -85,37 +88,30 @@ Provide the 'progress' object critically comparing the current image to the hist
   }
 
   try {
-    const chatCompletion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            {
-              type: "image_url",
-              image_url: {
-                url: imageUrl,
-              },
-            },
-          ],
+    const result = await model.generateContent([
+      { text: prompt },
+      {
+        inlineData: {
+          mimeType: mimeType,
+          data: imageData,
         },
-      ],
-      model: "meta-llama/llama-4-scout-17b-16e-instruct",
-      temperature: 0.1,
-      response_format: { type: "json_object" }
-    });
+      },
+    ]);
 
-    const responseText = chatCompletion.choices[0].message.content;
-    
+    let responseText = result.response.text();
+
+    // Clean up potential markdown formatting from LLM response
+    responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+
     try {
       return JSON.parse(responseText);
     } catch (e) {
-      console.error("Failed to parse Groq response:", responseText);
+      console.error("Failed to parse Gemini response:", responseText);
       throw new Error("AI returned invalid JSON.");
     }
 
   } catch (error) {
-    console.error('Groq analysis error:', error);
+    console.error('Gemini analysis error:', error.message);
     throw new Error('Failed to analyze wound image. Please try again.');
   }
 }

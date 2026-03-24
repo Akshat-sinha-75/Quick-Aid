@@ -247,111 +247,135 @@ export default function WoundDetail() {
 
                     {isExpanded && (
                       <div className="timeline-entry-details fade-in">
-                        {/* Analysis */}
-                        <div className="detail-block">
-                          <h4><Stethoscope size={16} /> Wound Analysis</h4>
-                          <div className="analysis-grid">
-                            <div className="analysis-item">
-                              <span className="analysis-label">Type</span>
-                              <span className="analysis-value">{entry.analysis?.woundType || 'N/A'}</span>
-                            </div>
-                            <div className="analysis-item">
-                              <span className="analysis-label">Severity</span>
-                              <span className="analysis-value" style={{ color: SeverityColor(entry.analysis?.severity) }}>
-                                {entry.analysis?.severity || 'N/A'}
-                              </span>
-                            </div>
-                          </div>
-
-                          {entry.analysis?.attributes && (
-                            <div className="attributes-grid">
-                              {Object.entries(entry.analysis.attributes).map(([key, val]) => (
-                                <div key={key} className="attribute-card">
-                                  <div className="attribute-name">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
-                                  <div className="attribute-level" style={{ color: SeverityColor(val?.level) }}>
-                                    {val?.level || 'N/A'}
-                                  </div>
-                                  <div className="attribute-desc">{val?.description || ''}</div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {entry.analysis?.overallAssessment && (
-                            <div className="overall-assessment">
-                              <p>{entry.analysis.overallAssessment}</p>
-                            </div>
-                          )}
+                        {/* Large Wound Image */}
+                        <div className="detail-wound-image">
+                          <img src={`http://localhost:5000${entry.imageUrl}`} alt={`Wound Entry ${idx + 1}`} />
                         </div>
 
-                        {/* Progress */}
-                        {entry.progress?.comparedToPrevious && entry.progress.status !== 'initial' && (
-                          <div className="detail-block">
-                            <h4><TrendingUp size={16} /> Progress</h4>
-                            <div className="progress-block">
-                              <div className="progress-bar-wrapper">
-                                <div className="progress-bar-track">
-                                  <div
-                                    className="progress-bar-fill"
-                                    style={{ width: `${entry.progress.percentageHealed || 0}%` }}
-                                  />
+                        {/* Two Column Layout */}
+                        <div className="detail-columns">
+                          {/* LEFT: Analysis */}
+                          <div>
+                            <div className="detail-block">
+                              <h4><Stethoscope size={16} /> Wound Analysis</h4>
+                              <div className="analysis-grid">
+                                <div className="analysis-item">
+                                  <span className="analysis-label">Type</span>
+                                  <span className="analysis-value">{entry.analysis?.type || entry.analysis?.woundType || 'N/A'}</span>
                                 </div>
-                                <span className="progress-percent">{entry.progress.percentageHealed || 0}% healed</span>
+                                <div className="analysis-item">
+                                  <span className="analysis-label">Severity</span>
+                                  <span className="analysis-value" style={{ color: SeverityColor(entry.analysis?.severity) }}>
+                                    {entry.analysis?.severity || 'N/A'}
+                                  </span>
+                                </div>
                               </div>
-                              <p className="progress-comparison">{entry.progress.comparedToPrevious}</p>
-                            </div>
-                          </div>
-                        )}
 
-                        {/* Treatment */}
-                        {entry.treatment && (
-                          <div className="detail-block">
-                            <h4><Pill size={16} /> Treatment Plan</h4>
-
-                            {entry.treatment.immediateSteps?.length > 0 && (
-                              <div className="treatment-section">
-                                <h5>Immediate Steps</h5>
-                                <ol className="treatment-list">
-                                  {entry.treatment.immediateSteps.map((step, i) => (
-                                    <li key={i}>{step}</li>
-                                  ))}
-                                </ol>
-                              </div>
-                            )}
-
-                            {entry.treatment.medications?.length > 0 && (
-                              <div className="treatment-section">
-                                <h5>Medications</h5>
-                                <div className="medications-grid">
-                                  {entry.treatment.medications.map((med, i) => (
-                                    <div key={i} className="medication-card">
-                                      <div className="med-name">{med.name}</div>
-                                      <div className="med-details">
-                                        {med.composition && <div><strong>Composition:</strong> {med.composition}</div>}
-                                        {med.dosage && <div><strong>Dosage:</strong> {med.dosage}</div>}
-                                        {med.timing && <div><strong>Timing:</strong> {med.timing}</div>}
-                                        {med.duration && <div><strong>Duration:</strong> {med.duration}</div>}
-                                        {med.notes && <div className="med-notes">{med.notes}</div>}
+                              {entry.analysis?.attributes && (
+                                <div className="attributes-grid">
+                                  {Object.entries(entry.analysis.attributes).map(([key, val]) => {
+                                    const displayValue = typeof val === 'object' ? (val?.level || JSON.stringify(val)) : String(val);
+                                    return (
+                                      <div key={key} className="attribute-card">
+                                        <div className="attribute-name">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+                                        <div className="attribute-level" style={{ color: SeverityColor(displayValue) }}>
+                                          {displayValue || 'N/A'}
+                                        </div>
+                                        {typeof val === 'object' && val?.description && (
+                                          <div className="attribute-desc">{val.description}</div>
+                                        )}
                                       </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+
+                              {(entry.analysis?.generalObservations || entry.analysis?.overallAssessment) && (
+                                <div className="overall-assessment">
+                                  <p>{entry.analysis.generalObservations || entry.analysis.overallAssessment}</p>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Progress */}
+                            {entry.progress?.comparedToPrevious && entry.progress.status !== 'initial' && (
+                              <div className="detail-block">
+                                <h4><TrendingUp size={16} /> Progress</h4>
+                                <div className="progress-block">
+                                  <div className="progress-bar-wrapper">
+                                    <div className="progress-bar-track">
+                                      <div
+                                        className="progress-bar-fill"
+                                        style={{ width: `${entry.progress.percentageHealed || 0}%` }}
+                                      />
                                     </div>
-                                  ))}
+                                    <span className="progress-percent">{entry.progress.percentageHealed || 0}% healed</span>
+                                  </div>
+                                  <p className="progress-comparison">{entry.progress.comparedToPrevious}</p>
                                 </div>
                               </div>
                             )}
 
-                            {entry.treatment.doNot?.length > 0 && (
-                              <div className="treatment-section">
+                            {entry.notes && (
+                              <div className="detail-block">
+                                <h4>📝 Notes</h4>
+                                <p className="entry-notes">{entry.notes}</p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* RIGHT: Treatment */}
+                          <div>
+                            {entry.treatment && (
+                              <div className="detail-block">
+                                <h4><Pill size={16} /> Treatment Plan</h4>
+
+                                {entry.treatment.immediateSteps?.length > 0 && (
+                                  <div className="treatment-section">
+                                    <h5>Immediate Steps</h5>
+                                    <ol className="treatment-list">
+                                      {entry.treatment.immediateSteps.map((step, i) => (
+                                        <li key={i}>{step}</li>
+                                      ))}
+                                    </ol>
+                                  </div>
+                                )}
+
+                                {entry.treatment.medications?.length > 0 && (
+                                  <div className="treatment-section">
+                                    <h5>Medications</h5>
+                                    <div className="medications-grid">
+                                      {entry.treatment.medications.map((med, i) => (
+                                        <div key={i} className="medication-card">
+                                          <div className="med-name">{med.name}</div>
+                                          <div className="med-details">
+                                            {med.composition && <div><strong>Composition:</strong> {med.composition}</div>}
+                                            {med.dosage && <div><strong>Dosage:</strong> {med.dosage}</div>}
+                                            {med.timing && <div><strong>Timing:</strong> {med.timing}</div>}
+                                            {med.duration && <div><strong>Duration:</strong> {med.duration}</div>}
+                                            {med.notes && <div className="med-notes">{med.notes}</div>}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {(entry.treatment?.doNots?.length > 0 || entry.treatment?.doNot?.length > 0) && (
+                              <div className="detail-block">
                                 <h5><Shield size={14} /> Things to Avoid</h5>
                                 <ul className="dont-list">
-                                  {entry.treatment.doNot.map((item, i) => (
+                                  {(entry.treatment.doNots || entry.treatment.doNot).map((item, i) => (
                                     <li key={i}>{item}</li>
                                   ))}
                                 </ul>
                               </div>
                             )}
 
-                            {entry.treatment.whenToSeeDoctor?.length > 0 && (
-                              <div className="treatment-section warning-section">
+                            {entry.treatment?.whenToSeeDoctor?.length > 0 && (
+                              <div className="detail-block warning-section">
                                 <h5><AlertTriangle size={14} /> When to See a Doctor</h5>
                                 <ul className="doctor-list">
                                   {entry.treatment.whenToSeeDoctor.map((item, i) => (
@@ -361,14 +385,7 @@ export default function WoundDetail() {
                               </div>
                             )}
                           </div>
-                        )}
-
-                        {entry.notes && (
-                          <div className="detail-block">
-                            <h4>📝 Notes</h4>
-                            <p className="entry-notes">{entry.notes}</p>
-                          </div>
-                        )}
+                        </div>
                       </div>
                     )}
                   </div>
