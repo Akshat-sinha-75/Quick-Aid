@@ -494,7 +494,10 @@ textarea.form-input {
 @media (max-width: 768px) {
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .container { padding: 0 16px; }
-  .page-header h1 { font-size: 2rem; }
+  .page-header h1 { 
+    font-size: 1.8rem; 
+    word-break: break-word;
+  }
 }
 
 /* Alerts updated for light theme */

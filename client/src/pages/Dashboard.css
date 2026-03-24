@@ -166,4 +166,12 @@
   .wounds-grid {
     grid-template-columns: 1fr;
   }
+  .dashboard-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .dashboard-header-row h1 {
+    font-size: 1.8rem;
+  }
 }
