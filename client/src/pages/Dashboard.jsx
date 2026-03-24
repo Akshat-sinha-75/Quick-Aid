@@ -5,12 +5,13 @@ import { useAuth } from '../context/AuthContext';
 import { Plus, Activity, CheckCircle, AlertTriangle, Clock, FileText } from 'lucide-react';
 import './Dashboard.css';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://quick-aid-1aod.onrender.com/api';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [wounds, setWounds] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
     fetchWounds();
@@ -22,6 +23,7 @@ export default function Dashboard() {
       setWounds(data);
     } catch (error) {
       console.error('Failed to fetch wounds:', error);
+      setFetchError(error.response?.data?.message || error.message || 'Unknown error');
     } finally {
       setLoading(false);
     }
@@ -96,6 +98,7 @@ export default function Dashboard() {
               <Activity size={48} />
             </div>
             <h3>No wound records yet</h3>
+            {fetchError && <p style={{color: 'red', marginTop: '10px'}}>Error loading data: {fetchError}</p>}
             <p>Start by uploading an image of a wound for AI-powered analysis and treatment recommendations.</p>
             <Link to="/new-wound" className="btn btn-primary">
               <Plus size={18} /> Create First Record
@@ -115,7 +118,7 @@ export default function Dashboard() {
                   <div className="wound-card-header">
                     <div className="wound-card-img">
                       {wound.entries?.[0]?.imageUrl ? (
-                        <img src={`http://localhost:5000${wound.entries[0].imageUrl}`} alt="Wound" />
+                        <img src={`https://quick-aid-1aod.onrender.com${wound.entries[0].imageUrl}`} alt="Wound" />
                       ) : (
                         <div className="wound-card-placeholder"><Activity size={24} /></div>
                       )}

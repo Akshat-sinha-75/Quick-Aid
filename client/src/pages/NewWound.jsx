@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Upload, Camera, MapPin, FileText, AlertTriangle, Loader, ArrowLeft, X } from 'lucide-react';
 import './NewWound.css';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://quick-aid-1aod.onrender.com/api';
 
 export default function NewWound() {
   const [title, setTitle] = useState('');

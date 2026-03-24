@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import './WoundDetail.css';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://quick-aid-1aod.onrender.com/api';
 
 function SeverityColor(level) {
   if (!level) return 'var(--text-muted)';
@@ -41,6 +41,7 @@ export default function WoundDetail() {
   const navigate = useNavigate();
   const [wound, setWound] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
   const [showFollowUp, setShowFollowUp] = useState(false);
   const [followUpImage, setFollowUpImage] = useState(null);
   const [followUpPreview, setFollowUpPreview] = useState(null);
@@ -66,6 +67,7 @@ export default function WoundDetail() {
       setWound(data);
     } catch (err) {
       console.error(err);
+      setFetchError(err.response?.data?.message || err.message || 'Unknown error');
     } finally {
       setLoading(false);
     }
@@ -118,7 +120,9 @@ export default function WoundDetail() {
   if (!wound) {
     return (
       <div className="page"><div className="container">
-        <div className="empty-state card"><h3>Wound not found</h3>
+        <div className="empty-state card">
+          <h3>Wound not found</h3>
+          {fetchError && <p style={{color: 'red'}}>Error: {fetchError}</p>}
           <button className="btn btn-primary" onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
         </div>
       </div></div>
@@ -229,7 +233,7 @@ export default function WoundDetail() {
                     <div className="timeline-entry-header">
                       <div className="timeline-entry-left">
                         <div className="timeline-entry-img">
-                          <img src={`http://localhost:5000${entry.imageUrl}`} alt={`Entry ${idx + 1}`} />
+                          <img src={`https://quick-aid-1aod.onrender.com${entry.imageUrl}`} alt={`Entry ${idx + 1}`} />
                         </div>
                         <div>
                           <div className="timeline-entry-title">
@@ -249,7 +253,7 @@ export default function WoundDetail() {
                       <div className="timeline-entry-details fade-in">
                         {/* Large Wound Image */}
                         <div className="detail-wound-image">
-                          <img src={`http://localhost:5000${entry.imageUrl}`} alt={`Wound Entry ${idx + 1}`} />
+                          <img src={`https://quick-aid-1aod.onrender.com${entry.imageUrl}`} alt={`Wound Entry ${idx + 1}`} />
                         </div>
 
                         {/* Two Column Layout */}
