@@ -190,10 +190,13 @@
 
 .timeline-content {
   flex: 1;
+  min-width: 0; /* CRITICAL: prevents flex blowout */
+  width: 100%;
   cursor: pointer;
   padding: 20px 28px;
   border-radius: var(--radius-lg, 16px);
   transition: all 0.3s ease;
+  overflow-wrap: break-word; /* ensures text wraps */
 }
 .timeline-content:hover {
   border-color: var(--border-glow);
@@ -275,6 +278,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 24px;
   margin-bottom: 24px;
+  min-width: 0; /* prevents grid blowout */
 }
 
 .detail-column-full {
@@ -362,6 +366,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 16px;
+  min-width: 0;
 }
 
 .attribute-card {
@@ -536,7 +541,8 @@
 /* ── Medications ── */
 .medications-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  /* Use 100% if less than 300px to avoid overflow on very tiny screens */
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
   gap: 14px;
 }
 
