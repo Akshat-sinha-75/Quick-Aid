@@ -87,33 +87,52 @@ ${JSON.stringify(previousAnalysis, null, 2)}
 Provide the 'progress' object critically comparing the current image to the historical data.`;
   }
 
-  try {
-    const result = await model.generateContent([
-      { text: prompt },
-      {
-        inlineData: {
-          mimeType: mimeType,
-          data: imageData,
-        },
-      },
-    ]);
+  let retries = 3;
+  let lastError;
 
-    let responseText = result.response.text();
-
-    // Clean up potential markdown formatting from LLM response
-    responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
-
+  while (retries > 0) {
     try {
-      return JSON.parse(responseText);
-    } catch (e) {
-      console.error("Failed to parse Gemini response:", responseText);
-      throw new Error("AI returned invalid JSON.");
-    }
+      const result = await model.generateContent([
+        { text: prompt },
+        {
+          inlineData: {
+            mimeType: mimeType,
+            data: imageData,
+          },
+        },
+      ]);
 
-  } catch (error) {
-    console.error('Gemini analysis error:', error.message);
-    throw new Error('Failed to analyze wound image. Please try again.');
+      let responseText = result.response.text();
+
+      // Clean up potential markdown formatting from LLM response
+      responseText = responseText.replace(/```json/g, '').replace(/```/g, '').trim();
+
+      try {
+        return JSON.parse(responseText);
+      } catch (e) {
+        console.error("Failed to parse Gemini response:", responseText);
+        throw new Error("AI returned invalid JSON.");
+      }
+
+    } catch (error) {
+      lastError = error;
+      // High demand, 503, or rate limit errors
+      if (error.message && (error.message.includes('503') || error.message.includes('demand') || error.message.includes('429'))) {
+        console.warn(`Gemini API busy (503/429). Retrying... (${retries - 1} attempts left)`);
+        retries--;
+        if (retries > 0) {
+          // Wait 3 seconds before retrying
+          await new Promise(resolve => setTimeout(resolve, 3000));
+        }
+      } else {
+        console.error('Gemini analysis critical error:', error.message);
+        throw new Error('Failed to analyze wound image. Please try again.');
+      }
+    }
   }
+
+  console.error('Gemini analysis failed after retries:', lastError?.message);
+  throw new Error('The AI model is currently experiencing extremely high demand. Please try again in a few minutes.');
 }
 
 module.exports = { analyzeWound };
