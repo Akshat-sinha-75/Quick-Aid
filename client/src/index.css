@@ -498,6 +498,13 @@ textarea.form-input {
     font-size: 1.8rem; 
     word-break: break-word;
   }
+  .card {
+    padding: 16px;
+  }
+  .glass-card {
+    padding: 20px 16px;
+    border-radius: var(--radius-lg);
+  }
 }
 
 /* Alerts updated for light theme */

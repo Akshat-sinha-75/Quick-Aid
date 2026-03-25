@@ -676,64 +676,104 @@
 
 @media (max-width: 768px) {
   .wound-detail-page {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 0;
+    padding-right: 0;
   }
   .wound-detail-header {
     flex-direction: column;
-    padding: 20px;
+    padding: 20px 16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
   .wound-detail-info h1 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
   .wound-detail-actions {
     width: 100%;
+    flex-direction: column;
   }
   .wound-detail-actions .btn {
-    flex: 1;
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
   }
-  .analysis-grid {
-    grid-template-columns: 1fr;
+  
+  /* Kill the timeline dots for mobile to save 40px of width! */
+  .timeline-dot-wrapper {
+    display: none;
   }
-  .attributes-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  
   .timeline-entry {
-    gap: 12px;
+    gap: 0;
+    margin-bottom: 16px;
   }
+  
+  /* Make cards edge-to-edge on mobile */
   .timeline-content {
-    padding: 16px 12px;
+    padding: 16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   }
-  .detail-block {
-    padding: 16px 14px;
-    margin-bottom: 20px;
+  
+  .timeline-entry-details {
+    padding-top: 16px;
+    margin-top: 16px;
   }
-  .analysis-item {
-    padding: 12px 10px;
+
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Make attributes wrap as chips instead of rigid columns */
+  .attributes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
   .attribute-card {
-    padding: 10px 8px;
+    flex: 1 1 calc(50% - 8px); /* 2 columns flexible */
+    padding: 10px;
   }
+
+  .detail-block {
+    padding: 0;
+    border: none;
+    background: transparent;
+    margin-bottom: 24px;
+  }
+  
   .overall-assessment {
-    padding: 14px 16px;
+    padding: 14px;
   }
+
   .treatment-list li {
-    padding: 12px 12px 12px 38px;
-    font-size: 0.85rem;
+    padding: 14px 14px 14px 44px;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
   }
   .treatment-list li::before {
-    left: 8px;
-    width: 22px;
-    height: 22px;
-    font-size: 0.65rem;
+    left: 10px;
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
   }
+
   .medication-card {
-    padding: 14px 16px;
+    padding: 16px;
+    margin-bottom: 12px;
   }
+
   .dont-list li, .doctor-list li {
-    padding: 10px 12px 10px 30px;
+    padding: 12px 14px 12px 34px;
+    margin-bottom: 8px;
   }
   .dont-list li::before, .doctor-list li::before {
-    left: 8px;
+    left: 10px;
   }
 }
